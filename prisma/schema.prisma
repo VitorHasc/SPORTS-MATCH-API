@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  idusuario         Int              @id @unique @default(autoincrement())
+  nome              String           @unique
+  email             String           @unique
+  cidade            String?
+  latitude          Float?
+  longitude         Float?
+  perfilFoto        String?
+  biografia         String?          @db.VarChar(500)
+  senha             String
+  datanasc          DateTime
+  genero            Genero           @default(outro)
+  online            DateTime
+  nick              String?
+
+  esportes          Esporte[]
+  mensagensEnviadas MensagemInd[]     @relation("MensagensEnviadas")
+  mensagensRecebidas MensagemInd[]    @relation("MensagensRecebidas")
+  grupos            Grupo_Usuario[]  // Relacionamento n:n com Grupo através de Grupo_Usuario
+}
+
+model Esporte {
+  idesporte   Int        @id @default(autoincrement())
+  usuarioId   Int
+  nome        String     @db.VarChar(500)
+
+  usuario     Usuario    @relation(fields: [usuarioId], references: [idusuario])
+}
+
+model MensagemInd {
+  idmensagem     Int      @id @unique @default(autoincrement())
+  remetenteId    Int
+  destinatarioId Int
+  texto          String   @db.VarChar(1000)
+  horario        DateTime
+
+  remetente      Usuario  @relation("MensagensEnviadas", fields: [remetenteId], references: [idusuario])
+  destinatario   Usuario  @relation("MensagensRecebidas", fields: [destinatarioId], references: [idusuario])
+}
+
+model Grupo {
+  idgrupo       Int            @id @unique @default(autoincrement())
+  nome          String         @db.VarChar(35)
+  descricao     String         @db.VarChar(500)
+  perfilFoto    String?
+  usuarios      Grupo_Usuario[] // Relacionamento n:n com Usuario através de Grupo_Usuario
+}
+
+model Grupo_Usuario {
+  idGU          Int            @id @unique @default(autoincrement())
+  adm           Boolean
+  pedido        Boolean   
+
+  usuarioId     Int
+  grupoId       Int
+
+  usuario       Usuario        @relation(fields: [usuarioId], references: [idusuario])
+  grupo         Grupo          @relation(fields: [grupoId], references: [idgrupo])
+}
+
+
+enum Genero {
+  fem
+  masc
+  outro
+}
