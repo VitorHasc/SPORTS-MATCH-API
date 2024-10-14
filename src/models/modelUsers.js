@@ -2,6 +2,12 @@ const { haversineDistance } = require('../function');
 const prisma = require('./conexaodb');
 const mysql = require('mysql2/promise');
 
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'tcc_banco_final'
+});
 
 const findUserById = async (idusuario) => {
   return await prisma.usuario.findUnique({
@@ -59,13 +65,8 @@ const loginUser = async ({email}) => {
 }
 
 
-// Configura a conexão com o banco de dados
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'tcc_banco_final'
-});
+
+
 
 const searchUsers = async ({ longitude, latitude, idademin, idademax, genero, esporte, nome, pagina, idusuario }) => {
   console.log(esporte)

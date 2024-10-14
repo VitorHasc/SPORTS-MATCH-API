@@ -1,4 +1,4 @@
-SECRET = "12345";
+SECRET = "meme";
 const jwt = require('jsonwebtoken');
 const port = 3000
 

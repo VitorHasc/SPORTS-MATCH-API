@@ -1,4 +1,4 @@
-const {SECRET, jwt} = require('../config/configvar');
+const {jwt} = require('../config/configvar');
 const { PrismaClient } = require('@prisma/client');
 const { findUserById, createUser, loginUser } = require('../models/modelUsers.js');
 const { searchUsers } = require('../models/modelUsers.js');
@@ -19,7 +19,7 @@ const registro = async (req, res) => {
   }
   try {
     const user = await createUser({ nome, senha, email, cidade, latitude, longitude, datanasc, caminhoImagem, caminhoImagem, genero, nick, biografia });
-    const token = jwt.sign({ ID: user.idusuario }, SECRET, { expiresIn: '48h' });
+    const token = jwt.sign({ ID: user.idusuario }, process.env.SECRET, { expiresIn: '48h' });
     res.json({ token });
   } catch (error) {
     console.log(error);
@@ -75,9 +75,9 @@ const puxarUsuarioatual = async (req, res, idusuario) => {
   console.log(idusuario);
   try {
     const user = await findUserById(idusuario);
-    const token = jwt.sign({ ID: idusuario }, SECRET, { expiresIn: '48h' });
+    const token = jwt.sign({ ID: idusuario }, process.env.SECRET, { expiresIn: '48h' });
     return res.json({user, token});
-  } 
+  }
   catch(err){}
 }
 
@@ -95,6 +95,7 @@ const puxarUsuarioalvo = async (req, res) => {
 //--------------------------------------------------------------------------------------------------------------------------------------------//
 
 const encontrarUsuarios = async (req, res) => {
+  console.log("GRITOOO")
   let { idademin, idademax, genero, esporte, nome, pagina } = req.body;
   const idusuario = req.ID;
   if(idademax && idademin){

@@ -3,6 +3,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
 const routesUsers = require('./routes/usersRoutes');
 const routesMessages = require('./routes/messagesRoutes');
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
   if (!token) {
     return res.status(401).json({ auth: false, message: 'Nenhum token fornecido.' });
   }
-  jwt.verify(token, SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
       return res.status(500).json({ auth: false, message: 'Falha ao autenticar o token.' });
     }
@@ -50,6 +51,8 @@ app.get('/imagem/imagem', (req, res) => {
   console.log(imagem);
   res.sendFile(imagem);
 });
+
+
 
 //Chamando as rotas
 app.use('/users', routesUsers);
