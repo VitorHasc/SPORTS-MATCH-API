@@ -21,17 +21,6 @@ const pool = mysql.createPool({
   }
 })();
 
-// Para usar a conexão
-(async () => {
-  const connection = await pool.getConnection();
-  try {
-    const [rows, fields] = await connection.query('SELECT * FROM sua_tabela');
-    console.log(rows);
-  } finally {
-    connection.release(); // Libera a conexão de volta para o pool
-  }
-})();
-
 const findUserById = async (idusuario) => {
   return await prisma.usuario.findUnique({
     where: {
