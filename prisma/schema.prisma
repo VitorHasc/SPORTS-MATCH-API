@@ -26,6 +26,7 @@ model Usuario {
   mensagensEnviadas MensagemInd[]     @relation("MensagensEnviadas")
   mensagensRecebidas MensagemInd[]    @relation("MensagensRecebidas")
   grupos            Grupo_Usuario[]  // Relacionamento n:n com Grupo através de Grupo_Usuario
+  mensagemGrupoE MensagemGrupo[]      @relation("mensagemGrupoE")
 }
 
 model Esporte {
@@ -53,6 +54,17 @@ model Grupo {
   descricao     String         @db.VarChar(500)
   perfilFoto    String?
   usuarios      Grupo_Usuario[] // Relacionamento n:n com Usuario através de Grupo_Usuario
+  mensagens     MensagemGrupo[] @relation("mensagens")
+}
+
+model MensagemGrupo {
+  id          Int      @id @default(autoincrement()) // Identificador único
+  grupoId     Int      
+  remetenteId Int      
+  conteudo    String   
+  timestamp   DateTime @default(now()) // Data e hora do envio
+  grupo       Grupo    @relation("mensagens", fields: [grupoId], references: [idgrupo]) // Relação com o grupo
+  remetente   Usuario  @relation("mensagemGrupoE", fields: [remetenteId], references: [idusuario]) // Relação com o usuário
 }
 
 model Grupo_Usuario {

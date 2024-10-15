@@ -1,4 +1,6 @@
-const {express, app, multer, upload} = require('./config/configfun'); const {SECRET, jwt, port} = require('./config/configvar');
+const {app, multer, upload} = require('./config/configfun');
+const express = require('express'); 
+const {SECRET, jwt, port} = require('./config/configvar');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
@@ -28,6 +30,7 @@ app.use((req, res, next) => {
     return res.status(401).json({ auth: false, message: 'Nenhum token fornecido.' });
   }
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    console.log(token)
     if (err) {
       return res.status(500).json({ auth: false, message: 'Falha ao autenticar o token.' });
     }

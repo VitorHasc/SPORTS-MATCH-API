@@ -3,10 +3,7 @@ const prisma = require('./conexaodb');
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'tcc_banco_final'
+  uri: 'mysql://root:gaVEYXRZvPJOXBprmOWWWSCTGLPTISjC@junction.proxy.rlwy.net:14777/railway'
 });
 
 const findUserById = async (idusuario) => {
