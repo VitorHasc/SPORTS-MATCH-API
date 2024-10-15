@@ -101,7 +101,7 @@ const searchUsers = async ({ longitude, latitude, idademin, idademax, genero, es
           cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + 
           sin(radians(?)) * sin(radians(latitude))
         )) AS distancia
-      FROM usuario
+      FROM Usuario
       WHERE datanasc BETWEEN ? AND ?
         ${genero ? `AND genero = ?` : ''}
         ${idsUsuariosJaInteragidos.length > 0 ? `AND idusuario NOT IN (${idsUsuariosJaInteragidos.map(() => '?').join(', ')})` : ''}
@@ -126,7 +126,7 @@ const searchUsers = async ({ longitude, latitude, idademin, idademax, genero, es
           cos(radians(?)) * cos(radians(u.latitude)) * cos(radians(u.longitude) - radians(?)) + 
           sin(radians(?)) * sin(radians(u.latitude))
         )) AS distancia
-      FROM usuario u
+      FROM Usuario u
       INNER JOIN esporte e ON u.idusuario = e.usuarioId
       WHERE u.datanasc BETWEEN ? AND ?
         ${genero ? `AND u.genero = ?` : ''}
