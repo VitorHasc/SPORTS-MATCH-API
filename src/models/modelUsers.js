@@ -3,8 +3,34 @@ const prisma = require('./conexaodb');
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-  uri: 'mysql://root:gaVEYXRZvPJOXBprmOWWWSCTGLPTISjC@junction.proxy.rlwy.net:14777/railway'
+  host: 'junction.proxy.rlwy.net',
+  user: 'root',
+  password: 'gaVEYXRZvPJOXBprmOWWWSCTGLPTISjC',
+  database: 'railway',
+  port: 14777,
 });
+
+// Para usar a conexão
+(async () => {
+  const connection = await pool.getConnection();
+  try {
+    const [rows, fields] = await connection.query('SELECT * FROM sua_tabela');
+    console.log(rows);
+  } finally {
+    connection.release(); // Libera a conexão de volta para o pool
+  }
+})();
+
+// Para usar a conexão
+(async () => {
+  const connection = await pool.getConnection();
+  try {
+    const [rows, fields] = await connection.query('SELECT * FROM sua_tabela');
+    console.log(rows);
+  } finally {
+    connection.release(); // Libera a conexão de volta para o pool
+  }
+})();
 
 const findUserById = async (idusuario) => {
   return await prisma.usuario.findUnique({
