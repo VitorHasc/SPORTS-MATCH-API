@@ -5,7 +5,7 @@ const mysql = require('mysql2/promise');
 const pool = mysql.createPool({
   host: 'junction.proxy.rlwy.net',
   user: 'root',
-  password: 'gaVEYXRZvPJOXBprmOWWWSCTGLPTISjC',
+  password: 'vLUVfgMdutPsmKAVyJTGUyRvIOqlVBDS',
   database: 'railway',
   port: 14777,
 });
