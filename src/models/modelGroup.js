@@ -23,7 +23,8 @@ const meusGruposm = async (usuarioId) => {
         where: {
             usuarios: {
                 some: {
-                    usuarioId: usuarioId
+                    usuarioId: usuarioId,
+                    pedido: true // Adiciona a condição para filtrar onde pedido é true
                 }
             }
         },
@@ -57,8 +58,8 @@ const enviarMensagemm = async (grupoId, usuarioId, conteudo) => {
 };
 
 // Enviar pedido para entrar em um grupo
-const fazerPedidom = async (usuarioId, grupoId) => {
-    // Verifica se já existe um pedido pendente para o mesmo usuário e grupo
+const fazerPedidom = async (usuarioId, grupoId) => { 
+    console.log("GRITEEEE" + grupoId)
     const pedidoExistente = await prisma.grupo_Usuario.findFirst({
         where: {
             usuarioId: usuarioId,

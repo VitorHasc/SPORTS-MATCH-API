@@ -48,7 +48,7 @@ const enviarMensagemGrupo = async (req, res) => {
 const fazerPedido = async (req, res) => {
     const { grupoId } = req.body;
     const usuarioId = req.ID;
-    const pedido = await fazerPedidom(usuarioId, grupoId);
+    const pedido = await fazerPedidom(parseInt(usuarioId), parseInt(grupoId));
     res.json({ pedido });
 };
 
