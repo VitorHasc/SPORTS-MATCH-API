@@ -2,6 +2,7 @@ const {jwt} = require('../config/configvar');
 const { PrismaClient } = require('@prisma/client');
 const { findUserById, createUser, loginUser } = require('../models/modelUsers.js');
 const { searchUsers } = require('../models/modelUsers.js');
+const bcrypt = require('bcrypt');
 
 const prisma = new PrismaClient()
 
@@ -11,15 +12,17 @@ const prisma = new PrismaClient()
 
 const registro = async (req, res) => {
   const { nome, senha, email, cidade, latitude, longitude, datanasc, genero, nick, biografia, esportes }= req.body; 
-  console.log(nome);
-  console.log(esportes);
   const caminhoImagem = req.file.path;
-  console.log(caminhoImagem)
+
   if (!nome || !senha || !email || !datanasc){
     return res.status(400).send('Informação Faltando');
   }
+
   try {
-    const user = await createUser({ nome, senha, email, cidade, latitude, longitude, datanasc, caminhoImagem, caminhoImagem, genero, nick, biografia, esportes });
+    const hashedSenha = await bcrypt.hash(senha, 10); 
+
+    const user = await createUser({ nome, senha: hashedSenha, email, cidade, latitude, longitude, datanasc, caminhoImagem, genero, nick, biografia, esportes });
+
     const token = jwt.sign({ ID: user.idusuario }, process.env.SECRET, { expiresIn: '48h' });
     res.json({ token });
   } catch (error) {
@@ -45,22 +48,30 @@ const registroMR = async (req, res) => {
 //------------------------------------------------------------------------------------------------------------------------------------------//
 
 const login = async (req, res) => {
-  const { email, senha,} = req.body;
-  if (email){
-    try{
-      user = await loginUser({email});
-      if(user.senha == senha){
-      return puxarUsuarioatual (req, res, user.idusuario)
-      }
-    }
-    catch(error){
-      res.status(500).send(error);
-    }
-  }
-  else{
-    return res.status(400).send('Nome/Email Faltando');
+  const { email, senha } = req.body;
+
+  if (!email || !senha) {
+    return res.status(400).send('Email/Senha Faltando');
   }
 
+  try {
+    const user = await loginUser({ email });
+
+    if (!user) {
+      return res.status(400).send('Usuário não encontrado');
+    }
+
+    // Comparar a senha fornecida com o hash no banco
+    const senhaCorreta = await bcrypt.compare(senha, user.senha);
+
+    if (senhaCorreta) {
+      return puxarUsuarioatual(req, res, user.idusuario);
+    } else {
+      return res.status(400).send('Senha incorreta');
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 //--------------------------------------------------------------------------------------------------------------------------------------------//
@@ -76,7 +87,7 @@ const puxarUsuarioatual = async (req, res, idusuario) => {
   console.log(idusuario);
   try {
     const user = await findUserById(idusuario);
-    const token = jwt.sign({ ID: idusuario }, process.env.SECRET, { expiresIn: '48h' });
+    const token = jwt.sign({ ID: idusuario }, process.env.SECRET, { expiresIn: '300h' });
     return res.json({user, token});
   }
   catch(err){}
