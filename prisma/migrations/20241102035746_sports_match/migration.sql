@@ -15,7 +15,6 @@ CREATE TABLE `Usuario` (
     `nick` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Usuario_idusuario_key`(`idusuario`),
-    UNIQUE INDEX `Usuario_nome_key`(`nome`),
     UNIQUE INDEX `Usuario_email_key`(`email`),
     PRIMARY KEY (`idusuario`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

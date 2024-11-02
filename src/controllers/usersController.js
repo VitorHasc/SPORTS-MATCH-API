@@ -10,15 +10,16 @@ const prisma = new PrismaClient()
 //--------------------------------------------------------------------------------------------------------------------------------------------//
 
 const registro = async (req, res) => {
-  const { nome, senha, email, cidade, latitude, longitude, datanasc, genero, nick, biografia }= req.body; 
+  const { nome, senha, email, cidade, latitude, longitude, datanasc, genero, nick, biografia, esportes }= req.body; 
   console.log(nome);
+  console.log(esportes);
   const caminhoImagem = req.file.path;
   console.log(caminhoImagem)
   if (!nome || !senha || !email || !datanasc){
     return res.status(400).send('Informação Faltando');
   }
   try {
-    const user = await createUser({ nome, senha, email, cidade, latitude, longitude, datanasc, caminhoImagem, caminhoImagem, genero, nick, biografia });
+    const user = await createUser({ nome, senha, email, cidade, latitude, longitude, datanasc, caminhoImagem, caminhoImagem, genero, nick, biografia, esportes });
     const token = jwt.sign({ ID: user.idusuario }, process.env.SECRET, { expiresIn: '48h' });
     res.json({ token });
   } catch (error) {
@@ -120,6 +121,11 @@ const encontrarUsuarios = async (req, res) => {
   }
 }
 
+const pegarEsportes = async (req, res) => {
+  const resultado = await pegarEsportesBanco();
+  return res.json (resultado);
+}
+
 
 module.exports = {
   login,
@@ -127,6 +133,7 @@ module.exports = {
   registroMR,
   perfil,
   encontrarUsuarios,
-  puxarUsuarioalvo
+  puxarUsuarioalvo,
+  pegarEsportes
 };
 

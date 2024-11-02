@@ -1,12 +1,13 @@
 const { haversineDistance } = require('../function');
 const prisma = require('./conexaodb');
 const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 const pool = mysql.createPool({
-  host: 'localhost',       
-  user: 'root',      
-  password: '',             
-  database: 'tcc_banco_final', 
+  host: 'mysql.infocimol.com.br',       
+  user: 'infocimol24',      
+  password: process.env.DATABASE_PASSWORD,             
+  database: 'infocimol24', 
   port: 3306,                
 });
 
@@ -37,24 +38,56 @@ const findUserById = async (idusuario) => {
   });
 };
 
-const createUser = async ({ nome, senha, email, cidade, latitude, longitude, datanasc, caminhoImagem, genero, nick, biografia }) => {
-  console.log(email, nome, senha, cidade, latitude, longitude, datanasc, caminhoImagem, genero, nick, biografia);
-  return await prisma.usuario.create({
+const createUser = async ({
+  nome,
+  senha,
+  email,
+  cidade,
+  latitude,
+  longitude,
+  datanasc,
+  caminhoImagem,
+  genero,
+  nick,
+  biografia,
+  esportes, // Adicione a variável esportes aqui
+}) => {
+  console.log(email, nome, senha, cidade, latitude, longitude, datanasc, caminhoImagem, genero, nick, biografia, esportes);
+
+  // Criação do usuário
+  const user = await prisma.usuario.create({
     data: {
       nome,
       email,
       cidade,
-      latitude:parseFloat(latitude),
-      longitude:parseFloat(longitude),
-      perfilFoto:caminhoImagem,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      perfilFoto: caminhoImagem,
       biografia,
       senha,
       datanasc,
       genero,
-      online: "1992-04-15T00:00:00.00Z",
+      online: "1992-04-15T00:00:00.00Z", 
       nick,
-    }
+    },
   });
+
+
+  const array = esportes.split(',').map(item => item.toLowerCase());
+
+  console.log(array);
+  if (array && array.length > 0) {
+    const esportesData = array.map((esporte) => ({
+      nome: esporte,
+      usuarioId: user.idusuario, 
+    }));
+    console.log(esportesData);
+    await prisma.esporte.createMany({
+      data: esportesData,
+    });
+  }
+
+  return user;
 };
 
 const loginUser = async ({email}) => {
@@ -157,10 +190,21 @@ const searchUsers = async ({ longitude, latitude, idademin, idademax, genero, es
   return { usuarios, pagina };
 };
 
+const pegarEsportesBanco = async () => {
+  const esportes = await prisma.esporte.findMany({
+    select: {
+      nome: true,
+    },
+    distinct: ['nome'],
+  });
+  return esportes.map(esporte => esporte.nome);
+};
+
 
 module.exports = { 
   findUserById, 
   createUser,
   loginUser,
-  searchUsers 
+  searchUsers,
+  pegarEsportesBanco 
 };

@@ -14,5 +14,6 @@ router.get('/user', UserController.puxarUsuarioalvo);
 router.post('/registroMR', UserController.registroMR);
 router.post('/perfil', UserController.perfil);
 router.post('/searchUsers', UserController.encontrarUsuarios);
+router.get('/esportes', UserController.pegarEsportes);
 
 module.exports = router;

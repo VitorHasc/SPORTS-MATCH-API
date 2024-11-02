@@ -9,7 +9,7 @@ datasource db {
 
 model Usuario {
   idusuario         Int              @id @unique @default(autoincrement())
-  nome              String           @unique
+  nome              String           
   email             String           @unique
   cidade            String?
   latitude          Float?

@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 //Autenticando o token
 app.use((req, res, next) => {
   try{
-  const rotasLivres = ['/users/login', '/users/registro', '/users/user', '/users/registroMR', '/imagem/imagem'];
+  const rotasLivres = ['/users/login', '/users/registro', '/users/user', '/users/registroMR', '/imagem/imagem', '/users/esportes'];
   if (rotasLivres.includes(req.path)) { //req.path pega o caminho que o front end mandou. Cai aqui caso tenha sido uma das rotas livres
     return next();
   }

@@ -29,9 +29,11 @@ const meusGrupos = async (req, res) => {
 
 // Ver mensagens de um grupo
 const verMensagens = async (req, res) => {
+    const idusuario = req.ID;
     const grupoId = req.query.grupoId;
     const mensagens = await verMensagensm(parseInt(grupoId));
-    res.json({ mensagens });
+    mensagens;
+    res.json({ mensagens, idusuario });
 };
 
 // Enviar uma mensagem para um grupo
@@ -56,20 +58,21 @@ const fazerPedido = async (req, res) => {
 const confirmarPedido = async (req, res) => {
     const { pedidoId } = req.body;
     const usuarioId = req.ID;
+    console.log(usuarioId);
     const pedido = await confirmarPedidom(pedidoId, usuarioId);
     res.json({ pedido });
 };
 
 // Criar um novo grupo
 const criarGrupo = async (req, res) => {
-    const { nome, descricao } = req.body;
+    const { nome, descricao, fundo } = req.body;
     const usuarioId = req.ID;
-    const novoGrupo = await criarGrupom(nome, descricao, usuarioId);
+    const novoGrupo = await criarGrupom(nome, descricao, usuarioId, fundo);
     res.json({ novoGrupo });
 };
 
 const buscarPedidos = async (req, res) => {
-    const grupoId = req.query.grupoId; // Assume que o ID do grupo será passado como um parâmetro de consulta
+    const grupoId = req.query.grupoId;
     const pedidos = await buscarPedidom(parseInt(grupoId));
     res.json({ pedidos });
 };
