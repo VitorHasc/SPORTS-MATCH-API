@@ -160,7 +160,7 @@ const searchUsers = async ({ longitude, latitude, idademin, idademax, genero, es
           sin(radians(?)) * sin(radians(u.latitude))
         )) AS distancia
       FROM Usuario u
-      INNER JOIN esporte e ON u.idusuario = e.usuarioId
+      INNER JOIN Esporte e ON u.idusuario = e.usuarioId
       WHERE u.datanasc BETWEEN ? AND ?
         ${genero ? `AND u.genero = ?` : ''}
         ${esporte ? `AND e.nome = ?` : ''}

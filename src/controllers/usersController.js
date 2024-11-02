@@ -99,6 +99,7 @@ const encontrarUsuarios = async (req, res) => {
   console.log("GRITOOO")
   let { idademin, idademax, genero, esporte, nome, pagina } = req.body;
   const idusuario = req.ID;
+  console.log("pegando idades" + idademin + idademax)
   if(idademax && idademin){
     const today = new Date();
     const minDate = new Date(today);
@@ -110,7 +111,8 @@ const encontrarUsuarios = async (req, res) => {
   }
   const lalo = await findUserById(idusuario);
   const latitude = lalo.latitude;
-  const longitude = lalo.longitude
+  const longitude = lalo.longitude;
+  console.log("TODOS JUNTOS!" + longitude + latitude + idademin + idademax + genero + esporte + nome + pagina + idusuario)
   try{
     const users = await searchUsers({longitude, latitude, idademin, idademax, genero, esporte, nome, pagina, idusuario});
     console.log(users);
@@ -120,7 +122,7 @@ const encontrarUsuarios = async (req, res) => {
     return res.send(error);
   }
 }
-
+ 
 const pegarEsportes = async (req, res) => {
   const resultado = await pegarEsportesBanco();
   return res.json (resultado);
